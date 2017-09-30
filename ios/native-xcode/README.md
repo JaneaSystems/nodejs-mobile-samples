@@ -12,7 +12,7 @@ To run the sample on iOS you need:
 
 ## How to run
  - Clone this project.
- - Download the Node.js on Mobile shared library from [here](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.1/nodejs-mobile-v0.1.1-ios.zip).
+ - Download the Node.js on Mobile shared library from [here](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.2/nodejs-mobile-v0.1.2-ios.zip).
  - Copy the `libnode.framework` file inside the zip to this project's `libnode/` folder (there's a `copy-libnode.framework-here` empty file inside the project's folder for convenience).
  - In Xcode import the `ios/native-xcode/native-xcode.xcodeproj` project.
  - Select one physical iOS device as the run target.
@@ -40,7 +40,7 @@ Using the Xcode 9's "Create a new Xcode Project" wizard, create a new Project wi
 #### Copy `libnode.framework` to the project structure:
 
 Create the `libnode/` folder path in the project's root folder, next to the `native-xcode.xcodeproj` package.
-Download the [Node.js on Mobile release](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.1/nodejs-mobile-v0.1.1-ios.zip), unzip it and copy `libnode.framework` to `libnode/`.
+Download the [Node.js on Mobile release](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.2/nodejs-mobile-v0.1.2-ios.zip), unzip it and copy `libnode.framework` to `libnode/`.
 
 #### Embed the `libnode.framework` in the binary.
 
