@@ -6,10 +6,14 @@ The sample app runs the node.js engine in a background thread to start an HTTP s
 
 ## How to run
  - Clone this project.
- - Download the Node.js on Mobile shared library from [here](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.0/nodejs-mobile-v0.1.0-android.zip).
- - Copy the `libnode.so` file inside the zip's `arm` folder to this project's `app/libnode/bin/armeabi-v7a/` folder (there's a `copy-libnode.so-here` empty file inside the project's folder for convenience).
+ - Download the Node.js on Mobile shared library from [here](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.2/nodejs-mobile-v0.1.2-android.zip).
+ - Copy the `bin/` folder from inside the downloaded zip file to `app/libnode/bin` (There are `copy-libnode.so-here` files in each architecture's path for convenience). If it's been done correctly you'll end with the following paths for the binaries:
+   - `app/libnode/bin/arm64-v8a/libnode.so`
+   - `app/libnode/bin/armeabi-v7a/libnode.so`
+   - `app/libnode/bin/x86/libnode.so`
+   - `app/libnode/bin/x86_64/libnode.so`
  - In Android Studio import the `android/native-gradle/` gradle project. It will automatically check for dependencies and prompt you to install missing requirements (i.e. you may need to update the Android SDK build tools to the required version (25.0.3) and install CMake to compile the C++ file that bridges Java to the Node.js on Mobile library).
- - After the gradle build completes, run the app on a `armeabi-v7a` compatible device.
+ - After the gradle build completes, run the app on a compatible device.
 
 
 ## How the sample was developed
@@ -60,7 +64,7 @@ Convert the existing `stringFromJNI` function into the `startNodeWithArguments` 
 ```cc
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_janeasystems_nodejs_1mobile_1sample_nodejs_1mobilesample_MainActivity_stringFromJNI(
+Java_com_yourorg_sample_MainActivity_stringFromJNI(
         JNIEnv *env,
         jobject /* this */)
 ```
@@ -69,7 +73,7 @@ to:
 
 ```cc
 extern "C" jint JNICALL
-Java_com_janeasystems_nodejs_1mobile_1sample_nodejs_1mobilesample_MainActivity_startNodeWithArguments(
+Java_com_yourorg_sample_MainActivity_startNodeWithArguments(
         JNIEnv *env,
         jobject /* this */,
         jobjectArray arguments)
@@ -85,7 +89,7 @@ The final `native-lib.cpp` looks like this:
 
 //node's libUV requires all arguments being on contiguous memory.
 extern "C" jint JNICALL
-Java_com_janeasystems_nodejs_1mobile_1sample_nodejs_1mobilesample_MainActivity_startNodeWithArguments(
+Java_com_yourorg_sample_MainActivity_startNodeWithArguments(
         JNIEnv *env,
         jobject /* this */,
         jobjectArray arguments) {
@@ -234,10 +238,13 @@ Since the app runs an HTTP server, it requires the right permissions in `app/src
 
 ### Add `libnode.so` to the build process
 
-#### Copy `libnode.so` to the project structure:
+#### Copy the `libnode.so` binaries to the project structure:
 
-Create the `libnode/bin/armeabi-v7a/` folder path in `app/`.
-Download the [Node.js on Mobile release](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.0/nodejs-mobile-v0.1.0-android.zip), unzip it and copy `libnode.so` to `app/libnode/bin/armeabi-v7a/libnode.so`.
+Create the `libnode/` folder inside the project's `app/` folder. Copy the `bin/` folder from inside the [downloaded zip file](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.2/nodejs-mobile-v0.1.2-android.zip) to `app/libnode/bin`. If it's been done correctly you'll end with the following paths for the binaries:
+ - `app/libnode/bin/arm64-v8a/libnode.so`
+ - `app/libnode/bin/armeabi-v7a/libnode.so`
+ - `app/libnode/bin/x86/libnode.so`
+ - `app/libnode/bin/x86_64/libnode.so`
 
 #### Configure CMake and link Library:
 
@@ -270,18 +277,18 @@ target_link_libraries( # Specifies the target library.
 
 In `app/build.gradle`, some changes have to be made to correctly build and package the application.
 
-Since the current shared library supports only the `armeabi-v7a` architecture, we have to instruct gradle to only package native code for that architecture, by adding an `ndk` clause inside `defaultConfig`:
-```gradle
+We have to instruct gradle to only package native code for the supported architectures, by adding an `ndk` clause inside `defaultConfig`:
+```groovy
         ndk {
-            abiFilters "armeabi-v7a"
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
 ```
 
 The shared library was built using the `libC++` STL, therefore the `ANDROID_STL=c++_shared` definition has to be passed inside the cmake clause in `defaultConfig` with `arguments "-DANDROID_STL=c++_shared"`:
 
-```gradle
+```groovy
     defaultConfig {
-        applicationId "com.janeasystems.nodejs_mobile_sample.nodejs_mobilesample"
+        applicationId "com.yourorg.sample"
         minSdkVersion 21
         targetSdkVersion 25
         versionCode 1
@@ -294,14 +301,14 @@ The shared library was built using the `libC++` STL, therefore the `ANDROID_STL=
             }
         }
         ndk {
-            abiFilters "armeabi-v7a"
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
     }
 ```
 
 Configure gradle to override its default `sourceSets` to include the libnode.so folder path, in the `android` section:
 
-```gradle
+```groovy
 android {
 
 ...

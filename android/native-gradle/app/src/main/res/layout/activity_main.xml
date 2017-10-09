@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.janeasystems.nodejs_mobile_sample.nodejs_mobilesample.MainActivity">
+    tools:context="com.yourorg.sample.MainActivity">
 
     <Button
         android:id="@+id/btVersions"

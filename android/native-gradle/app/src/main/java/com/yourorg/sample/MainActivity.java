@@ -1,4 +1,4 @@
-package com.janeasystems.nodejs_mobile_sample.nodejs_mobilesample;
+package com.yourorg.sample;
 
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;

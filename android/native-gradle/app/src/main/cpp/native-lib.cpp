@@ -5,7 +5,7 @@
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_janeasystems_nodejs_1mobile_1sample_nodejs_1mobilesample_MainActivity_stringFromJNI(
+Java_com_yourorg_sample_MainActivity_stringFromJNI(
         JNIEnv *env,
         jobject /* this */) {
     std::string hello = "Hello from C++";
@@ -14,7 +14,7 @@ Java_com_janeasystems_nodejs_1mobile_1sample_nodejs_1mobilesample_MainActivity_s
 
 //node's libUV requires all arguments being on contiguous memory.
 extern "C" jint JNICALL
-Java_com_janeasystems_nodejs_1mobile_1sample_nodejs_1mobilesample_MainActivity_startNodeWithArguments(
+Java_com_yourorg_sample_MainActivity_startNodeWithArguments(
         JNIEnv *env,
         jobject /* this */,
         jobjectArray arguments) {
