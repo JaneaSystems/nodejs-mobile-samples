@@ -1,0 +1,21 @@
+# Mac OS X files that are not needed.
+*.DS_Store
+
+# IDE specific files (Web Storm, VS code, etc.)
+.idea/*
+!.idea/runConfigurations/
+.settings
+.vscode/*
+
+# All log files
+*.log
+
+# Git conflict file backups
+*.orig
+
+# All packages 
+node_modules/
+bower_components/
+
+# All cordova built files
+/cordova

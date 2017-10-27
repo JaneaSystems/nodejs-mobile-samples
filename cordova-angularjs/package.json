@@ -1,0 +1,43 @@
+{
+  "name": "nodejs_cordova_angular",
+  "version": "0.0.1",
+  "description": "NodeJs mobile application using Cordova and AngularJs",
+  "main": "",
+  "private": false,
+  "license": "MIT",
+  "homepage": "https://code.janeasystems.com/nodejs-mobile",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/janeasystems/nodejs-mobile-cordova"
+  },
+  "scripts": {
+    "postinstall": "npm run bower && npm run node-npm && echo $(tput setaf 3)Postinstall Complete!$(tput sgr0)",
+    "bower": "echo $(tput setaf 3)Installing bower components...$(tput sgr0) && bower install",
+    "node-npm": "echo $(tput setaf 3)Running nodejs mobile install...$(tput sgr0) && pushd src/server && npm install --no-optional && popd",
+    "jshint": "jshint ./src/client/app/app.js && jshint ./src/server/main.js",
+    "setup-cordova": "pushd ./cordova && cordova create ExampleCordovaAngular && npm run add-platforms && npm run add-plugins && popd",
+    "add-platforms": "pushd ./cordova/ExampleCordovaAngular && cordova platform add ios && popd",
+    "add-plugins": "pushd ./cordova/ExampleCordovaAngular && cordova plugin add nodejs-mobile-cordova && cordova plugin add cordova-plugin-console && popd"
+  },
+  "keywords": [
+    "mobile",
+    "nodejs",
+    "cordova",
+    "angularjs"
+  ],
+  "engines": {
+    "node": "8.7.0",
+    "npm": "5.4.2",
+    "ios-deploy": "1.9.2"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "browser-sync": "2.18.13",
+    "del": "3.0.0",
+    "glob": "7.1.2",
+    "gulp": "3.9.1",
+    "gulp-livereload": "3.8.1",
+    "jshint": "2.9.5",
+    "nodemon": "1.12.1"
+  }
+}
