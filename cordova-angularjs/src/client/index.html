@@ -1,0 +1,57 @@
+<html>
+  <head>
+      <meta charset="utf-8" />
+      <title>Test NodeJS Mobile App</title>
+      <meta http-equiv="Content-Security-Policy"
+      content="connect-src * ws://* wss://* blob:;
+               script-src 'self'
+                           'unsafe-inline'
+                           'unsafe-eval';
+               style-src 'self' 'unsafe-inline';
+               img-src 'self' data: blob:;
+               font-src 'self';
+               object-src 'none';
+               frame-src gap://ready;
+               child-src gap://ready;">
+      <meta name="format-detection" content="telephone=no">
+      <meta name="msapplication-tap-highlight" content="no">
+      <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+      <!-- STYLES -->
+      <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+      <link rel="stylesheet" type="text/css" href="bower_components/font-awesome/css/font-awesome.min.css">
+      <link rel="stylesheet" type="text/css"  href="css/index.css">
+      <link rel="stylesheet" type="text/css"  href="css/styles.css">
+    </head>
+  <body>
+    <div class="page-content" ng-app="example.nodejsmobile.app">
+      <div class="container-fluid">
+        <div class="row row-padded">
+          <div class="col-xs-12"><h1>{{title}}</h1></div>
+        </div>
+        <div class="row row-padded">
+          <div class="col-xs-4">
+            <button ng-click="doHttp()" class="btn-md btn-default">Do HTTP<br><span class="fa fa-fw fa-send"></span></button>
+          </div>
+          <div class="col-xs-4">
+            <button ng-click="doStart()" class="btn-md btn-default">Start Socket<br><span class="fa fa-fw fa-play"></span></button>
+          </div>
+          <div class="col-xs-4">
+            <button ng-click="doStop()" class="btn-md btn-default">Stop Socket<br><span class="fa fa-fw fa-stop"></span></button>
+          </div>
+        </div>
+        <div class="row row-padded">
+          <div class="col-xs-12">
+            <div ng-repeat="msg in debugMessages">{{msg}}</div>
+          </div>
+        </div>
+      </div>
+      <script type="text/javascript" src="cordova.js"></script>
+      <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+      <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>        
+      <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+      <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+      <script type="text/javascript" src="dist/socket.io.js"></script>
+      <script type="text/javascript" src="app/app.js"></script>
+    </div>
+  </body>
+</html>
