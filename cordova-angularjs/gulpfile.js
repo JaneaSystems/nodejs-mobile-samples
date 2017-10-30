@@ -8,6 +8,7 @@ var gulp = require('gulp'),
     del = require('del');
 
 var client = {
+    cordova: './cordova/',
     dist: './cordova/ExampleCordovaAngular/www/',
     src:  './src/client/**/*'
 };
@@ -34,6 +35,10 @@ gulp.task('clean', function (cb) {
 
 gulp.task('clean:dev', function (cb) {
     return del([deps.bower, deps.node, deps.root, deps.rootb], {force: true}, cb);
+});
+
+gulp.task('clean:cordova', function (cb) {
+    return del([client.cordova], {force: true}, cb);
 });
 
 gulp.task('remove-binaries', ['build-server'], function (cb) {
