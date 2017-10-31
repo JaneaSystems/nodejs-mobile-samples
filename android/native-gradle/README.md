@@ -6,7 +6,7 @@ The sample app runs the node.js engine in a background thread to start an HTTP s
 
 ## How to run
  - Clone this project.
- - Download the Node.js on Mobile shared library from [here](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.2/nodejs-mobile-v0.1.2-android.zip).
+ - Download the Node.js on Mobile shared library from [here](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.3/nodejs-mobile-v0.1.3-android.zip).
  - Copy the `bin/` folder from inside the downloaded zip file to `app/libnode/bin` (There are `copy-libnode.so-here` files in each architecture's path for convenience). If it's been done correctly you'll end with the following paths for the binaries:
    - `app/libnode/bin/arm64-v8a/libnode.so`
    - `app/libnode/bin/armeabi-v7a/libnode.so`
@@ -34,20 +34,17 @@ Using the Android Studio's New Project wizard, create a new Project with the fol
     - `Runtime TYpe Information Support (-frtti)` checked off
 1. Finish
 
-### Create node.h
+### Copy libnode's header files
 
-To access libnode's `Start()` entrypoint, a header file is required.
-Create a `node.h` file in the `cpp` folder (`app/src/main/cpp/`) with the following content:
+To access libnode's `Start()` entrypoint, the libnode's header files are required.
 
-```h
-#ifndef SRC_NODE_H_
-#define SRC_NODE_H_
+Create the `libnode/` folder inside the project's `app/` folder. Copy the `include/` folder from inside the [downloaded zip file](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.3/nodejs-mobile-v0.1.3-android.zip) to `app/libnode/include`. If it's been done correctly you'll end with the following path for the `node.h` header file:
+ - `app/libnode/include/node/node.h`
 
-namespace node {
-    int Start(int argc, char *argv[]);
-}
-#endif  // SRC_NODE_H_
-``` 
+In `app/CMakeLists.txt` add the following line to add libnode's header files to the CMake include paths:
+```CMake
+include_directories(libnode/include/node/)
+```
 
 ### Add native JNI function to start node.js
 
@@ -240,7 +237,7 @@ Since the app runs an HTTP server, it requires the right permissions in `app/src
 
 #### Copy the `libnode.so` binaries to the project structure:
 
-Create the `libnode/` folder inside the project's `app/` folder. Copy the `bin/` folder from inside the [downloaded zip file](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.2/nodejs-mobile-v0.1.2-android.zip) to `app/libnode/bin`. If it's been done correctly you'll end with the following paths for the binaries:
+Copy the `bin/` folder from inside the [downloaded zip file](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.3/nodejs-mobile-v0.1.3-android.zip) to `app/libnode/bin`. If it's been done correctly you'll end with the following paths for the binaries:
  - `app/libnode/bin/arm64-v8a/libnode.so`
  - `app/libnode/bin/armeabi-v7a/libnode.so`
  - `app/libnode/bin/x86/libnode.so`
