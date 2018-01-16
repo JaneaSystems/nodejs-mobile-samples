@@ -110,7 +110,7 @@ export default class SuspendResume extends Component {
   }
   componentWillMount()
   {
-    nodejs.start();
+    nodejs.start('main.js');
     nodejs.channel.addListener(
       "message",
       (msg) => {
