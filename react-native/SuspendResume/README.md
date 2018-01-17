@@ -98,26 +98,34 @@ rn_bridge.channel.send("Node was initialized.");
 
 The React Native interface takes care of querying `Node.js` for versions and showing it in the UI. It also signals when the App enters the background and comes back again, through `AppState`.
 
-index.ios.js and index.android.js contents:
+App.js contents:
 ```js
 ...
 import nodejs from 'nodejs-mobile-react-native';
 
-export default class SuspendResume extends Component {
+export default class App extends Component<{}> {
   constructor(props){
     super(props);
     this.state = { lastNodeMessage: "No message yet." };
+    this.listenerRef = null;
   }
   componentWillMount()
   {
     nodejs.start('main.js');
+    this.listenerRef = ((msg) => {
+      this.setState({lastNodeMessage: msg});
+    });
     nodejs.channel.addListener(
       "message",
-      (msg) => {
-        this.setState({lastNodeMessage: msg});
-      },
+      this.listenerRef,
       this 
     );
+  }
+  componentWillUnmount()
+  {
+    if (this.listenerRef) {
+      nodejs.channel.removeListener("message", this.listenerRef);
+    }
   }
   componentDidMount(){
     AppState.addEventListener('change', (state) => {

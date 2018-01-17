@@ -6,7 +6,7 @@
 
 import React, { Component } from 'react';
 import {
-  AppRegistry,
+  Platform,
   StyleSheet,
   Text,
   Button,
@@ -16,21 +16,29 @@ import {
 
 import nodejs from 'nodejs-mobile-react-native';
 
-export default class SuspendResume extends Component {
+export default class App extends Component<{}> {
   constructor(props){
     super(props);
     this.state = { lastNodeMessage: "No message yet." };
+    this.listenerRef = null;
   }
   componentWillMount()
   {
     nodejs.start('main.js');
+    this.listenerRef = ((msg) => {
+      this.setState({lastNodeMessage: msg});
+    });
     nodejs.channel.addListener(
       "message",
-      (msg) => {
-        this.setState({lastNodeMessage: msg});
-      },
+      this.listenerRef,
       this 
     );
+  }
+  componentWillUnmount()
+  {
+    if (this.listenerRef) {
+      nodejs.channel.removeListener("message", this.listenerRef);
+    }
   }
   componentDidMount(){
     AppState.addEventListener('change', (state) => {
@@ -74,5 +82,3 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
-
-AppRegistry.registerComponent('SuspendResume', () => SuspendResume);
