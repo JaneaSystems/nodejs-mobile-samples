@@ -63,6 +63,8 @@ Next, run a build to copy the NodeJs and AngularJs files to the `cordova/www` fo
  $ gulp build
 ```
 
+### iOS Instructions
+
 Open the Cordova app project in Xcode:
 
 ```
@@ -88,5 +90,18 @@ Go back to Xcode:
 - Select a target device for the project
 - Run the project
 - The app itself will show the sequence of events; these events are also output to the console
+
+### Android Instructions
+
+With your device connected, run the following commands from terminal:
+
+```
+ $ cd cordova/ExampleCordovaAngular
+ $ cordova run android
+```
+
+The app itself will show the sequence of events; these events are also output to logcat
+
+### Starting Over
 
 If you want to clean out the cordova app and start over, use `gulp clean:cordova`.  Then start over with the instructions in this section.

@@ -16,7 +16,7 @@
     "node-npm": "echo $(tput setaf 3)Running nodejs mobile install...$(tput sgr0) && pushd src/server && npm install --no-optional && popd",
     "jshint": "jshint ./src/client/app/app.js && jshint ./src/server/main.js",
     "setup-cordova": "mkdirp ./cordova && pushd ./cordova && cordova create ExampleCordovaAngular && npm run add-platforms && npm run add-plugins && popd",
-    "add-platforms": "pushd ./cordova/ExampleCordovaAngular && cordova platform add ios && popd",
+    "add-platforms": "pushd ./cordova/ExampleCordovaAngular && cordova platform add ios android && popd",
     "add-plugins": "pushd ./cordova/ExampleCordovaAngular && cordova plugin add nodejs-mobile-cordova && cordova plugin add cordova-plugin-console && popd"
   },
   "keywords": [
