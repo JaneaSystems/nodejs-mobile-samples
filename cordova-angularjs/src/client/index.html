@@ -40,6 +40,28 @@
           </div>
         </div>
         <div class="row row-padded">
+          <div class="col-xs-4">
+            <button ng-click="clearLog()" class="btn-md btn-default">Clear Log<br><span class="fa fa-fw fa-window-close"></span></button>
+          </div>
+          <div class="col-xs-4">
+            <button ng-click="sendEcho()" class="btn-md btn-default">Echo<br><span class="fa fa-fw fa-comments-o"></span></button>
+          </div>
+          <div class="col-xs-4">
+            <button ng-click="toggleEcho()" class="btn-md btn-default">Toggle Echo<br><span class="fa fa-fw fa-toggle-on"></span></button>
+          </div>
+        </div>
+        <div class="row row-padded">
+          <div class="col-xs-4">
+            <button ng-click="doFileWrite()" class="btn-md btn-default">Write a File<br><span class="fa fa-fw fa-file"></span></button>
+          </div>
+          <div class="col-xs-4">
+            <button ng-click="addAnotherEchoListener()" class="btn-md btn-default">Add Listener<br><span class="fa fa-fw fa-plus"></span></button>
+          </div>
+          <div class="col-xs-4">
+            <button ng-click="removeAnotherEchoListener()" class="btn-md btn-default">Remove Listener<br><span class="fa fa-fw fa-minus"></span></button>
+          </div>
+        </div>
+      <div class="row row-padded">
           <div class="col-xs-12">
             <div ng-repeat="msg in debugMessages">{{msg}}</div>
           </div>
@@ -47,7 +69,7 @@
       </div>
       <script type="text/javascript" src="cordova.js"></script>
       <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
-      <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>        
+      <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
       <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
       <script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
       <script type="text/javascript" src="dist/socket.io.js"></script>
