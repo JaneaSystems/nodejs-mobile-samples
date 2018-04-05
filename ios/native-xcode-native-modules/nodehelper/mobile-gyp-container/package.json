@@ -1,0 +1,10 @@
+{
+  "name": "mobile-gyp-container",
+  "version": "0.0.1",
+  "description": "container for installing nodejs-mobile-gyp locally",
+  "author": "janeasystems",
+  "license": "",
+  "dependencies": {
+    "nodejs-mobile-gyp": "0.1.1"
+  }
+}
