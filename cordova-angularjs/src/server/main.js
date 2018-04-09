@@ -113,6 +113,36 @@ if (isMobile) {
                             cordova.channel.post('angular-log', "control channel received incorrect channel name: " + JSON.stringify(msg));
                         }
                         break;
+                    case 'load-all-dependencies':
+                        try {
+                            let load_module_helper = function(module_name) {
+                                cordova.channel.post('angular-log', "Will require module: " + module_name);
+                                let required_module = require(module_name);
+                                cordova.channel.post('angular-log', "Required module successfully: " + module_name);
+                            };
+                            load_module_helper('os');
+                            load_module_helper('path');
+                            load_module_helper('events');
+                            load_module_helper('net');
+                            load_module_helper('dgram');
+                            load_module_helper('util');
+                            load_module_helper('body-parser');
+                            load_module_helper('cors');
+                            load_module_helper('express');
+                            load_module_helper('lodash');
+                            load_module_helper('q');
+                            load_module_helper('request-promise');
+                            load_module_helper('salti-admin');
+                            load_module_helper('socket.io');
+                            load_module_helper('object-sizeof');
+                            load_module_helper('validator');
+                            load_module_helper('bluebird');
+                            load_module_helper('hexy');
+                            load_module_helper('sprintf-js');
+                        } catch (e) {
+                            cordova.channel.post('angular-log', "Error while requiring modules: " + JSON.stringify(e) + " and stack is: " + e.stack);
+                        }
+                        break;
                     default:
                         cordova.channel.post('angular-log', "control channel received unknown action: " + JSON.stringify(msg));
                 }

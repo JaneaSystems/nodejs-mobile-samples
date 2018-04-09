@@ -258,6 +258,13 @@ function($rootScope, $http, $timeout, theSocket) {
         }
     }
 
+    function loadAllDependencies() {
+        // Instructs node to require all dependencies
+        nodejs.channel.post('control', {
+            action: 'load-all-dependencies'
+        });
+    }
+
     $rootScope.doHttp  = checkHttp;
     $rootScope.doStart = startSocket;
     $rootScope.doStop  = stopSocket;
@@ -267,5 +274,6 @@ function($rootScope, $http, $timeout, theSocket) {
     $rootScope.doFileWrite = doFileWrite;
     $rootScope.addAnotherEchoListener = addAnotherEchoListener;
     $rootScope.removeAnotherEchoListener = removeAnotherEchoListener;
+    $rootScope.loadAllDependencies = loadAllDependencies;
 }
 ]);
