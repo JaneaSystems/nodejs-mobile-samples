@@ -166,5 +166,10 @@ if (isMobile) {
         });
     });
 
+    cordova.channel.on('test-type', (msg) => {
+        // Report the message payload type and contents.
+        cordova.channel.post('angular-log','Received type "' + (typeof msg) + '" with contents : ' + JSON.stringify(msg) );
+    });
+
     cordova.channel.post('started' , "Hi, cordova! It's node! I've started. Mind checking that HTTP?");
 }

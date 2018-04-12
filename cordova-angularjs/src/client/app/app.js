@@ -265,6 +265,42 @@ function($rootScope, $http, $timeout, theSocket) {
         });
     }
 
+    function testMessageTypesSent() {
+        // Test undefined.
+        nodejs.channel.post('test-type');
+        // Test booleans.
+        nodejs.channel.post('test-type', false);
+        nodejs.channel.post('test-type', true);
+        // Test null.
+        nodejs.channel.post('test-type', null);
+        // Test numbers.
+        nodejs.channel.post('test-type', 1);
+        nodejs.channel.post('test-type', -1);
+        nodejs.channel.post('test-type', 0);
+        nodejs.channel.post('test-type', 1.3);
+        nodejs.channel.post('test-type', -1.3);
+        // Test strings.
+        nodejs.channel.post('test-type', 'a');
+        nodejs.channel.post('test-type', "");
+        nodejs.channel.post('test-type', "This is a string.");
+        nodejs.channel.post('test-type', "These are\ntwo lines.");
+        // Test objects.
+        var _testobj = {
+            a_number: '-4.3',
+            a_null: null,
+            a_boolean: false,
+            a_string: 'The object string',
+            an_array: [0, false, "arr_string"],
+            an_object: { field_a: 'a', field_b: 3 }
+        };
+        nodejs.channel.post('test-type', _testobj);
+        nodejs.channel.post('test-type', {});
+        // Test arrays.
+        nodejs.channel.post('test-type', [1, 2, 3]);
+        nodejs.channel.post('test-type', []);
+        nodejs.channel.post('test-type', [2, _testobj, null, "other string"]);
+    }
+
     $rootScope.doHttp  = checkHttp;
     $rootScope.doStart = startSocket;
     $rootScope.doStop  = stopSocket;
@@ -275,5 +311,6 @@ function($rootScope, $http, $timeout, theSocket) {
     $rootScope.addAnotherEchoListener = addAnotherEchoListener;
     $rootScope.removeAnotherEchoListener = removeAnotherEchoListener;
     $rootScope.loadAllDependencies = loadAllDependencies;
+    $rootScope.testMessageTypesSent = testMessageTypesSent;
 }
 ]);
