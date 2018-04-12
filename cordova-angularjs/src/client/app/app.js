@@ -146,6 +146,11 @@ function($rootScope, $http, $timeout, theSocket) {
             checkHttp();
         });
 
+        nodejs.channel.on('test-type', (msg) => {
+            // Report the message payload type and contents.
+            appendToLog('Received type "' + (typeof msg) + '" with contents : ' + JSON.stringify(msg) , true);
+        });
+
         nodejs.start('main.js',
         function(err) {
             if (err) {
@@ -301,6 +306,13 @@ function($rootScope, $http, $timeout, theSocket) {
         nodejs.channel.post('test-type', [2, _testobj, null, "other string"]);
     }
 
+    function testMessageTypesReceived() {
+        // Asks node to send messages with different types.
+        nodejs.channel.post('control', {
+            action: 'send-msg-types'
+        });
+    }
+
     $rootScope.doHttp  = checkHttp;
     $rootScope.doStart = startSocket;
     $rootScope.doStop  = stopSocket;
@@ -312,5 +324,6 @@ function($rootScope, $http, $timeout, theSocket) {
     $rootScope.removeAnotherEchoListener = removeAnotherEchoListener;
     $rootScope.loadAllDependencies = loadAllDependencies;
     $rootScope.testMessageTypesSent = testMessageTypesSent;
+    $rootScope.testMessageTypesReceived = testMessageTypesReceived;
 }
 ]);

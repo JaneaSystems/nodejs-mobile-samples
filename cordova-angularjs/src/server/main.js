@@ -143,6 +143,9 @@ if (isMobile) {
                             cordova.channel.post('angular-log', "Error while requiring modules: " + JSON.stringify(e) + " and stack is: " + e.stack);
                         }
                         break;
+                    case 'send-msg-types':
+                        sendMessageTypesToCordova();
+                        break;
                     default:
                         cordova.channel.post('angular-log', "control channel received unknown action: " + JSON.stringify(msg));
                 }
@@ -170,6 +173,42 @@ if (isMobile) {
         // Report the message payload type and contents.
         cordova.channel.post('angular-log','Received type "' + (typeof msg) + '" with contents : ' + JSON.stringify(msg) );
     });
+
+    function sendMessageTypesToCordova() {
+        // Test undefined.
+        cordova.channel.post('test-type');
+        // Test booleans.
+        cordova.channel.post('test-type', false);
+        cordova.channel.post('test-type', true);
+        // Test null.
+        cordova.channel.post('test-type', null);
+        // Test numbers.
+        cordova.channel.post('test-type', 1);
+        cordova.channel.post('test-type', -1);
+        cordova.channel.post('test-type', 0);
+        cordova.channel.post('test-type', 1.3);
+        cordova.channel.post('test-type', -1.3);
+        // Test strings.
+        cordova.channel.post('test-type', 'a');
+        cordova.channel.post('test-type', "");
+        cordova.channel.post('test-type', "This is a string.");
+        cordova.channel.post('test-type', "These are\ntwo lines.");
+        // Test objects.
+        var _testobj = {
+            a_number: '-4.3',
+            a_null: null,
+            a_boolean: false,
+            a_string: 'The object string',
+            an_array: [0, false, "arr_string"],
+            an_object: { field_a: 'a', field_b: 3 }
+        };
+        cordova.channel.post('test-type', _testobj);
+        cordova.channel.post('test-type', {});
+        // Test arrays.
+        cordova.channel.post('test-type', [1, 2, 3]);
+        cordova.channel.post('test-type', []);
+        cordova.channel.post('test-type', [2, _testobj, null, "other string"]);
+    }
 
     cordova.channel.post('started' , "Hi, cordova! It's node! I've started. Mind checking that HTTP?");
 }
