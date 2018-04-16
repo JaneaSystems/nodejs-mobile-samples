@@ -100,6 +100,7 @@ function($rootScope, $http, $timeout, theSocket) {
             document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
             document.addEventListener('pause', this.onDevicePause.bind(this), false);
             document.addEventListener('resume', this.onDeviceResume.bind(this), false);
+            document.addEventListener('backbutton', this.onBackButton.bind(this), false);
 
             if (!(window && window.cordova)) { // browser dev
                 $timeout(checkHttp, 2000);
@@ -120,6 +121,13 @@ function($rootScope, $http, $timeout, theSocket) {
         onDeviceResume: function() {
             this.receivedEvent('resume');
             checkHttp();
+        },
+
+        onBackButton: function() {
+            // By default, the back button behavior will kill the WebView in Android.
+            // We still do it, for testing purposes, but also log the event.
+            this.receivedEvent('backbutton');
+            navigator.app.exitApp();
         },
 
         receivedEvent: function(id) {
@@ -155,6 +163,11 @@ function($rootScope, $http, $timeout, theSocket) {
         function(err) {
             if (err) {
                 appendToLog('AngularJS, failed NodeJs engine' + err, true);
+                if (err === 'Engine already started') {
+                    // A new WebView has been created, but the Engine is already running in the
+                    //background. Instruct it to restart its servers, which might be closed.
+                    nodejs.channel.post('control', { action: 'app-restart' } );
+                }
             } else {
                 appendToLog('AngularJS, started NodeJs engine', true);
             }
@@ -170,7 +183,7 @@ function($rootScope, $http, $timeout, theSocket) {
         })
         .catch(function(err) {
             $rootScope.message = 'HTTP err:' + JSON.stringify(err);
-            appendToLog('HTTP err: ' + JSON.stringify(err), true);
+            appendToLog('HTTP err: ' + JSON.stringify(err));
         });
     }
 

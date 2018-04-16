@@ -58,20 +58,23 @@ io.on('connection', (newSocket) => {
 });
 
 function server_start() {
-    server.listen(8081, () => {
-        console.log('NodeJS listening on 8081');
-    });
+    if (!server.listening) {
+        server.listen(8081, () => {
+            console.log('NodeJS listening on 8081');
+        });
+    }
 }
 
-server_start();
 if (isMobile) {
     const cordova = require('cordova-bridge');
 
     cordova.app.on('pause', () => {
+        console.log('NodeJS received a pause event.');
         server.close();
     });
 
     cordova.app.on('resume', () => {
+        console.log('NodeJS received a resume event.');
         server_start();
     });
 
@@ -146,6 +149,10 @@ if (isMobile) {
                     case 'send-msg-types':
                         sendMessageTypesToCordova();
                         break;
+                    case 'app-restart':
+                        // There was a restart in the Cordova side. Rerun the start actions.
+                        startActions();
+                        break;
                     default:
                         cordova.channel.post('angular-log', "control channel received unknown action: " + JSON.stringify(msg));
                 }
@@ -210,5 +217,10 @@ if (isMobile) {
         cordova.channel.post('test-type', [2, _testobj, null, "other string"]);
     }
 
-    cordova.channel.post('started' , "Hi, cordova! It's node! I've started. Mind checking that HTTP?");
+    function startActions() {
+        // To run in the first start or in a restart request sent by the Cordova side.
+        server_start();
+        cordova.channel.post('started' , "Hi, cordova! It's node! I've started. Mind checking that HTTP?");
+    }
+    startActions();
 }
