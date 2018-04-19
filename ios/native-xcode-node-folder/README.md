@@ -21,7 +21,7 @@ To run the sample on iOS you need:
 
 ## How the sample was developed
 
-This sample was built on top of the [`native-xcode` sample from this repo](https://github.com/janeasystems/nodejs-mobile-samples/tree/master/ios/native-xcode), with the same functionality, but uses a `nodejs-project` folder that contains the node part of the project.
+This sample was built on top of the [`native-xcode` sample from this repo](../native-xcode), with the same functionality, but uses a `nodejs-project` folder that contains the node part of the project.
 
 ### Create the `nodejs-project` folder
 

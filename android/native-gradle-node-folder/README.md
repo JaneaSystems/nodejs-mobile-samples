@@ -18,7 +18,7 @@ The sample app runs the node.js engine in a background thread to start an HTTP s
 
 ## How the sample was developed
 
-This sample was built on top of the [`native-gradle` sample from this repo](https://github.com/janeasystems/nodejs-mobile-samples/tree/master/android/native-gradle), with the same functionality, but uses a `nodejs-project` folder that contains the node part of the project.
+This sample was built on top of the [`native-gradle` sample from this repo](../native-gradle), with the same functionality, but uses a `nodejs-project` folder that contains the node part of the project.
 
 ### Create the `nodejs-project` folder
 
