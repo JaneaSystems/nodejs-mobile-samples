@@ -45,6 +45,7 @@ var app = {
 };
 
 function channelListener(msg) {
+  // Upon receiving the infos object from the nodejs process, do something (here, just formatting the data)
   var message = JSON.parse(msg);
   var body = document.getElementByTagId("body");
   var bodyContent = "";

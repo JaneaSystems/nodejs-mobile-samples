@@ -1,11 +1,15 @@
 'use strict';
 
+// This is to get the System's info, for this sample's purpose
 const os = require('os');
 const ifaces = os.networkInterfaces();
 
+// Include ipcMain to communicate with the Renderer processes
 const {app, BrowserWindow, ipcMain} = require('electron');
 
+// When the "infosRequest" request arrives from a renderer process, do something
 ipcMain.on("infosRequest", function (event, arg = null) {
+  // A little switch/case to serve the correct data depending on the argument
   switch (arg) {
     case "interfaces":
       event.sender.send("infosResponse", JSON.stringify(infos.ifaces));
@@ -18,16 +22,23 @@ ipcMain.on("infosRequest", function (event, arg = null) {
   }
 });
 
+// When the sychronous request "syncInfosRequest" arrives, return a specific value
+// The process will pause until the value is returned, since this is a synchronous interaction
 ipcMain.on("syncInfosRequest", function (event) {
   event.returnValue = infos.platform;
 });
 
+// This sends the info directly to the renderer process, with a 5 seconds timeout
+// The timeout is there because the window has to be loaded first
+// This is why this is the reverse way of thinking, and why you shouldn't use it aside from alerts.
+// My personal recommendation is, for alerts, to create another window and THEN request the error content from its Renderer, but do as you wish
 setTimeout(function () {
   reverseWindow.webContents.send("infosReverse", infos.platform)
 }, 5000);
 
 /************************************************************/
 
+// Here is a little codde for gathering info about the system, for the purpose of this sample
 var infos = null;
 
 var localIfaces = [];
@@ -64,10 +75,12 @@ infos = {
 
 /************************************************************/
 
+// This makes the app quit when all of the windows are closed
 app.on("window-all-closed", function () {
   app.quit();
 });
 
+// All of this is native Electron code to create windows, you should visit proper tutorials and documentation for this.
 let firstWindow, secondWindow, thirdWindow, syncWindow, reverseWindow;
 
 app.on("ready", function () {

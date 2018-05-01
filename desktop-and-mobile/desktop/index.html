@@ -5,14 +5,18 @@
 </head>
 <body id="body" onload="updateInfos();">
   <script>
+    // Import the ipcRenderer, to communicate with the Main process
     const {ipcRenderer} = require('electron');
 
+    // Simple DOM JavaScript to write info to the body
     body = document.getElementById("body");
 
     function updateInfos() {
+      // Sends an asynchronous request to the Main process
       ipcRenderer.send("infosRequest");
     }
 
+    // When the response to the asynchronous request arrives, so something with it (here, formatting the data)
     ipcRenderer.on("infosResponse", function (event, arg) {
       arg = JSON.parse(arg);
       body.innerHTML = "";
