@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reverse-thinking platform info is here</title>
+</head>
+<body id="body">
+  <script>
+    const {ipcRenderer} = require('electron');
+
+    body = document.getElementById("body");
+
+    ipcRenderer.on("infosReverse", function (event, arg) {
+      body.innerHTML = "This was send using a reverse thinking: " + arg;
+    });
+  </script>
+</body>
+</html>

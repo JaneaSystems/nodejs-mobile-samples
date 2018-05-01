@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>All info is here</title>
+</head>
+<body id="body" onload="updateInfos();">
+  <script>
+    const {ipcRenderer} = require('electron');
+
+    body = document.getElementById("body");
+
+    function updateInfos() {
+      ipcRenderer.send("infosRequest");
+    }
+
+    ipcRenderer.on("infosResponse", function (event, arg) {
+      arg = JSON.parse(arg);
+      body.innerHTML = "";
+      for (var i = 0; i < arg.ifaces.names.length; i++) {
+        body.innerHTML += arg.ifaces.names[i] + ": " + arg.ifaces.addresses[i] + "<br/>";
+      }
+      body.innerHTML += "Platform: " + arg.platform + " ver " + arg.platform_version;
+    });
+  </script>
+</body>
+</html>

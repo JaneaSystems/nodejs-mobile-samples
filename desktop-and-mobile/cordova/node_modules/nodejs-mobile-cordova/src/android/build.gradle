@@ -1,0 +1,254 @@
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.3'
+    }
+}
+
+android {
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 25
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+                arguments "-DANDROID_STL=c++_shared"
+            }
+        }
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "src/com/janeasystems/cdvnodejsmobile/jni/CMakeLists.txt"
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+cdvPluginPostBuildExtras += { ->
+    // gzip files will cause errors with aapt. Remove them for improved npm compatibility.
+    android.aaptOptions.ignoreAssetsPattern += ":!*.gz";
+    // The MacOS builder helper script is not needed inside the APK.
+    android.aaptOptions.ignoreAssetsPattern += ":!build-native-modules-MacOS-helper-script.sh";
+    // The file that caches the value of NODEJS_MOBILE_BUILD_NATIVE_MODULES is not needed inside the APK.
+    android.aaptOptions.ignoreAssetsPattern += ":!NODEJS_MOBILE_BUILD_NATIVE_MODULES_VALUE.txt";
+};
+
+import org.gradle.internal.os.OperatingSystem;
+
+String shouldRebuildNativeModules = System.getenv('NODEJS_MOBILE_BUILD_NATIVE_MODULES');
+
+if (shouldRebuildNativeModules==null) {
+// If the environment variable is not set right now, check if it has been saved to a file during
+// the cordova prepare phase.
+    def nativeModulesPreferenceFile = file("${project.projectDir}/assets/www/NODEJS_MOBILE_BUILD_NATIVE_MODULES_VALUE.txt");
+    if (nativeModulesPreferenceFile.exists()) {
+        shouldRebuildNativeModules=nativeModulesPreferenceFile.text;
+    }
+}
+
+if ("1".equals(shouldRebuildNativeModules)) {
+
+    String npmCommandName = 'npm';
+    if (OperatingSystem.current().isMacOsX()) {
+        // On macOS, npm's location may not be in the PATH environment variable if gradle is being run
+        // by Android Studio. We need npm to build native modules, so we use a helper script that
+        // is created by a Cordova prepare hook to run npm with the PATH members that were available
+        // during the prepare event.
+        try {
+            def commandResult = exec {
+                commandLine 'command', '-v', 'npm'
+                ignoreExitValue = true
+            }
+            if ( commandResult.getExitValue() != 0 ) {
+                // If npm is not found by command, use the helper script.
+                logger.warn("Couldn't find npm in the PATH for building native modules. Will try to use a helper script.");
+                npmCommandName = '../build-native-modules-MacOS-helper-script.sh';
+            }
+        } catch ( Exception e ) {
+            throw new GradleException('Something went wrong looking for npm by running "command".', e)
+        }
+    }
+
+    android.defaultConfig.ndk.abiFilters.each { abi_name ->
+        String temp_arch = {
+            switch (abi_name) {
+                case 'armeabi-v7a':
+                    'arm'
+                    break
+                case 'arm64-v8a':
+                    'arm64'
+                    break
+                default:
+                    abi_name
+                    break
+            }
+        }()
+        String temp_cc_ver = '4.9';
+        String temp_dest_cpu;
+        String temp_v8_arch;
+        String temp_suffix;
+        String temp_toolchain_name;
+        switch ( temp_arch )
+        {
+            case 'arm':
+                temp_dest_cpu = "${temp_arch}"
+                temp_v8_arch = "${temp_arch}"
+                temp_suffix = "${temp_arch}-linux-androideabi"
+                temp_toolchain_name = "${temp_suffix}"
+                break
+            case 'x86':
+                temp_dest_cpu = 'ia32'
+                temp_v8_arch = 'ia32'
+                temp_suffix = 'i686-linux-android'
+                temp_toolchain_name = "${temp_arch}"
+                break
+            case 'x86_64':
+                temp_dest_cpu = 'x64'
+                temp_v8_arch = 'x64'
+                temp_suffix = "${temp_arch}-linux-android"
+                temp_toolchain_name = "${temp_arch}"
+                break
+            case 'arm64':
+                temp_dest_cpu = "${temp_arch}"
+                temp_v8_arch = "${temp_arch}"
+                temp_suffix = 'aarch64-linux-android'
+                temp_toolchain_name = 'aarch64'
+                break
+            default:
+                throw new GradleException("Unsupported architecture for nodejs-mobile native modules: ${temp_arch}")
+                break
+        }
+
+        String ndk_bundle_path = android.ndkDirectory
+        String standalone_toolchain = "${rootProject.buildDir}/standalone-toolchains/${temp_toolchain_name}"
+        String npm_toolchain_add_to_path = "${rootProject.buildDir}/bin"
+        String npm_toolchain_ar = "${standalone_toolchain}/bin/${temp_suffix}-ar"
+        String npm_toolchain_cc = "${standalone_toolchain}/bin/${temp_suffix}-clang"
+        String npm_toolchain_cxx = "${standalone_toolchain}/bin/${temp_suffix}-clang++"
+        String npm_toolchain_link = "${standalone_toolchain}/bin/${temp_suffix}-clang++"
+
+        String npm_gyp_defines = "target_arch=${temp_arch}"
+        npm_gyp_defines += " v8_target_arch=${temp_v8_arch}"
+        npm_gyp_defines += " android_target_arch=${temp_arch}"
+        if (OperatingSystem.current().isMacOsX()) {
+            npm_gyp_defines += " host_os=mac OS=android"
+        } else if (OperatingSystem.current().isLinux()) {
+            npm_gyp_defines += " host_os=linux OS=android"
+        } else {
+            throw new GradleException("Unsupported opperating system for nodejs-mobile native builds: ${OperatingSystem.current().getName()}")
+        }
+
+        task "CopyNodeProjectAssets${abi_name}" {
+            description = "Copying node assets to build native modules for ${abi_name}."
+            inputs.files fileTree (
+                    dir: "${project.projectDir}/assets/www/nodejs-project/"
+                ).exclude({
+                    details -> // We shouldn't need to rebuild native code if there are only changes in the Node.js project javascript files.
+                        !details.isDirectory() &&
+                        details.getPath().endsWith('.js') &&
+                        !details.getPath().startsWith('node_modules/')
+                })
+            outputs.file "${rootProject.buildDir}/nodejs-native-assets-temp-build/nodejs-native-assets-${abi_name}/copy.timestamp"
+            doLast {
+                delete "${rootProject.buildDir}/nodejs-native-assets-temp-build/nodejs-native-assets-${abi_name}/"
+                copy {
+                    from "${project.projectDir}/assets/www/nodejs-project/"
+                    into "${rootProject.buildDir}/nodejs-native-assets-temp-build/nodejs-native-assets-${abi_name}/nodejs-project/"
+                }
+                if (OperatingSystem.current().isMacOsX()) {
+                    // Copy the helper script for calling npm when building in Android Studio on macOS.
+                    copy {
+                        from "${project.projectDir}/assets/www/build-native-modules-MacOS-helper-script.sh"
+                        into "${rootProject.buildDir}/nodejs-native-assets-temp-build/nodejs-native-assets-${abi_name}/"
+                    }
+                }
+                new File("${rootProject.buildDir}/nodejs-native-assets-temp-build/nodejs-native-assets-${abi_name}/copy.timestamp").text = "${new Date().format('yyyy-MM-dd HH:mm:ss')}"
+            }
+        }
+
+        task "MakeToolchain${abi_name}" (type:Exec) {
+            description = "Building a native toolchain to compile nodejs-mobile native modules for ${abi_name}."
+            executable = "${ndk_bundle_path}/build/tools/make-standalone-toolchain.sh"
+            args "--toolchain=${temp_toolchain_name}-${temp_cc_ver}", "--arch=${temp_arch}", "--install-dir=${standalone_toolchain}", "--stl=libc++", "--force", "--platform=android-22"
+            outputs.file "${standalone_toolchain}"
+        }
+
+        task "BuildNpmModules${abi_name}" (type:Exec) {
+            dependsOn "MakeToolchain${abi_name}"
+            dependsOn "CopyNodeProjectAssets${abi_name}"
+            inputs.file "${rootProject.buildDir}/nodejs-native-assets-temp-build/nodejs-native-assets-${abi_name}/copy.timestamp"
+            outputs.file "${rootProject.buildDir}/nodejs-native-assets-temp-build/nodejs-native-assets-${abi_name}/nodejs-project/"
+            description = "Building native modules for ${abi_name}."
+            workingDir "${rootProject.buildDir}/nodejs-native-assets-temp-build/nodejs-native-assets-${abi_name}/nodejs-project/"
+            commandLine npmCommandName, '--verbose', 'rebuild', '--build-from-source'
+            //environment ('PATH', "${npm_toolchain_add_to_path}" + System.getProperty("path.separator") + "${System.env.PATH}")
+            environment ('npm_config_node_engine', 'v8' )
+            environment ('npm_config_nodedir', "${project.projectDir}/src/com/janeasystems/cdvnodejsmobile/jni/libnode/" )
+            environment ('npm_config_node_gyp', "${rootProject.projectDir}/../../plugins/nodejs-mobile-cordova/node_modules/nodejs-mobile-gyp/bin/node-gyp.js" )
+            environment ('npm_config_arch', temp_arch)
+            environment ('npm_config_platform', 'android')
+            environment ('npm_config_format', 'make-android')
+            environment ('TOOLCHAIN',"${standalone_toolchain}")
+            environment ('AR',"${npm_toolchain_ar}")
+            environment ('CC',"${npm_toolchain_cc}")
+            environment ('CXX',"${npm_toolchain_cxx}")
+            environment ('LINK',"${npm_toolchain_link}")
+            environment ('GYP_DEFINES',"${npm_gyp_defines}")
+        }
+
+        task "CopyBuiltNpmAssets${abi_name}" (type:Sync) {
+            dependsOn "BuildNpmModules${abi_name}"
+            description = "Copying node assets with build native modules for ${abi_name}."
+            from "${rootProject.buildDir}/nodejs-native-assets-temp-build/nodejs-native-assets-${abi_name}/nodejs-project/"
+            into "${rootProject.buildDir}/nodejs-native-assets/nodejs-native-assets-${abi_name}/"
+            includeEmptyDirs = false
+            include '**/*.node'
+        }
+
+        task "GenerateNodeNativeAssetsLists${abi_name}" {
+            dependsOn "CopyBuiltNpmAssets${abi_name}"
+            description "Generates a list for runtime copying"
+            inputs.file "${rootProject.buildDir}/nodejs-native-assets/nodejs-native-assets-${abi_name}/"
+            outputs.file "${rootProject.buildDir}/nodejs-native-assets/nodejs-native-assets-${abi_name}/file.list"
+            outputs.file "${rootProject.buildDir}/nodejs-native-assets/nodejs-native-assets-${abi_name}/dir.list"
+            doLast{
+                delete "${rootProject.buildDir}/nodejs-native-assets/nodejs-native-assets-${abi_name}/file.list"
+                delete "${rootProject.buildDir}/nodejs-native-assets/nodejs-native-assets-${abi_name}/dir.list"
+                String file_list = "";
+                String dir_list = "";
+
+                def assets_tree = fileTree(dir: "${rootProject.buildDir}/nodejs-native-assets/nodejs-native-assets-${abi_name}/" )
+                assets_tree.visit { assetFile ->
+                    if (assetFile.isDirectory()) {
+                    dir_list+="${assetFile.relativePath}\n"
+                    } else {
+                    file_list+="${assetFile.relativePath}\n"
+                    }
+                }
+                def file_list_path = new File( "${rootProject.buildDir}/nodejs-native-assets/nodejs-native-assets-${abi_name}/file.list")
+                file_list_path.write file_list
+                def dir_list_path = new File( "${rootProject.buildDir}/nodejs-native-assets/nodejs-native-assets-${abi_name}/dir.list")
+                dir_list_path.write dir_list
+            }
+        }
+        cdvPluginPostBuildExtras += { ->
+            tasks.getByPath(":preBuild").dependsOn "GenerateNodeNativeAssetsLists${abi_name}";
+            project.android.sourceSets.main.assets.srcDirs+="${rootProject.buildDir}/nodejs-native-assets/";
+        };
+    }
+}
+
+cdvPluginPostBuildExtras += { ->
+    android.sourceSets.main.jniLibs.srcDirs += 'src/com/janeasystems/cdvnodejsmobile/jni/libnode/bin/';
+};

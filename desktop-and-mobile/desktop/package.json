@@ -1,0 +1,15 @@
+{
+  "name": "desktop",
+  "version": "0.0.1",
+  "description": "The desktop version of nodejs-mobile's crossplatform example",
+  "main": "main.js",
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^1.8.6"
+  },
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Rinyuaru-Kun",
+  "license": "ISC"
+}

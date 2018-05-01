@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Synchronous platform info is here</title>
+</head>
+<body id="body" onload="updateInfos();">
+  <script>
+    const {ipcRenderer} = require('electron');
+
+    body = document.getElementById("body");
+
+    function updateInfos() {
+      body.innerHTML = "To know that you were operating " + ipcRenderer.sendSync("syncInfosRequest") + ", we used a synchronous event.";
+    }
+  </script>
+</body>
+</html>

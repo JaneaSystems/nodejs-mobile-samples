@@ -1,0 +1,11 @@
+{
+  "name": "nodejs-mobile-sample-project",
+  "version": "0.1.0",
+  "description": "Node.js for Mobile Apps sample project",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Janea Systems Inc.",
+  "license": "MIT"
+}

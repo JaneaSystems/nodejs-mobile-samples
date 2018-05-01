@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interfaces info is here</title>
+</head>
+<body id="body" onload="updateInfos();">
+  <script>
+    const {ipcRenderer} = require('electron');
+
+    body = document.getElementById("body");
+
+    function updateInfos() {
+      ipcRenderer.send("infosRequest", "interfaces");
+    }
+
+    ipcRenderer.on("infosResponse", function (event, arg) {
+      arg = JSON.parse(arg);
+      body.innerHTML = "";
+      for (var i = 0; i < arg.names.length; i++) {
+        body.innerHTML += arg.names[i] + ": " + arg.addresses[i] + "<br/>";
+      }
+    });
+  </script>
+</body>
+</html>

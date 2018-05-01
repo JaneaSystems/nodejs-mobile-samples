@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Platform info is here</title>
+</head>
+<body id="body" onload="updateInfos();">
+  <script>
+    const {ipcRenderer} = require('electron');
+
+    body = document.getElementById("body");
+
+    function updateInfos() {
+      ipcRenderer.send("infosRequest", "platform");
+    }
+
+    ipcRenderer.on("infosResponse", function (event, arg) {
+      body.innerHTML = arg;
+    });
+  </script>
+</body>
+</html>
