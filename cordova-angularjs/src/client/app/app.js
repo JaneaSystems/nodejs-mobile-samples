@@ -154,9 +154,16 @@ function($rootScope, $http, $timeout, theSocket) {
             checkHttp();
         });
 
-        nodejs.channel.on('test-type', (msg) => {
+        nodejs.channel.on('test-type', (msg, secondMsg, ...other_args) => {
             // Report the message payload type and contents.
-            appendToLog('Received type "' + (typeof msg) + '" with contents : ' + JSON.stringify(msg) , true);
+            let report_msg = 'Received type "' + (typeof msg) + '" with contents : ' + JSON.stringify(msg);
+            if (typeof secondMsg !== 'undefined') {
+                report_msg += ' . Also received type "' + (typeof secondMsg) + '" with contents : ' + JSON.stringify(secondMsg);
+            }
+            if (other_args.length > 0) {
+                report_msg += ' . Further arguments received: ' + JSON.stringify(other_args);
+            }
+            appendToLog(report_msg , true);
         });
 
         nodejs.start('main.js',
@@ -317,6 +324,9 @@ function($rootScope, $http, $timeout, theSocket) {
         nodejs.channel.post('test-type', [1, 2, 3]);
         nodejs.channel.post('test-type', []);
         nodejs.channel.post('test-type', [2, _testobj, null, "other string"]);
+        // Send many arguments in the same event.
+        nodejs.channel.post('test-type', 'two-args', _testobj);
+        nodejs.channel.post('test-type', 'many-args', false, true, null, 1, 0, -1.3, [1, 2, 3], _testobj);
     }
 
     function testMessageTypesReceived() {

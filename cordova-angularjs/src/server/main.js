@@ -176,9 +176,16 @@ if (isMobile) {
         });
     });
 
-    cordova.channel.on('test-type', (msg) => {
+    cordova.channel.on('test-type', (msg, secondMsg, ...other_args) => {
         // Report the message payload type and contents.
-        cordova.channel.post('angular-log','Received type "' + (typeof msg) + '" with contents : ' + JSON.stringify(msg) );
+        let report_msg = 'Received type "' + (typeof msg) + '" with contents : ' + JSON.stringify(msg);
+        if (typeof secondMsg !== 'undefined') {
+            report_msg += ' . Also received type "' + (typeof secondMsg) + '" with contents : ' + JSON.stringify(secondMsg);
+        }
+        if (other_args.length > 0) {
+            report_msg += ' . Further arguments received: ' + JSON.stringify(other_args);
+        }
+        cordova.channel.post('angular-log', report_msg);
     });
 
     function sendMessageTypesToCordova() {
@@ -215,6 +222,9 @@ if (isMobile) {
         cordova.channel.post('test-type', [1, 2, 3]);
         cordova.channel.post('test-type', []);
         cordova.channel.post('test-type', [2, _testobj, null, "other string"]);
+        // Send many arguments in the same event.
+        cordova.channel.post('test-type', 'two-args', _testobj);
+        cordova.channel.post('test-type', 'many-args', false, true, null, 1, 0, -1.3, [1, 2, 3], _testobj);
     }
 
     function startActions() {
