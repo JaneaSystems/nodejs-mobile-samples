@@ -51,10 +51,33 @@ io.on('connection', (newSocket) => {
         console.log('Socket.io: error: ' + err);
     });
 
-    newSocket.on('disconnect', () => {
-        console.log('Socket.io: disconnected');
+    newSocket.on('close', () => {
+        console.log('Socket.io: close ');
+    });
+
+    newSocket.on('disconnecting', (reason) => {
+        console.log('Socket.io: disconnecting. Reason: ' + reason);
+    });
+
+    newSocket.on('disconnect', (reason) => {
+        console.log('Socket.io: disconnected. Reason: ' + reason);
         newSocket.removeAllListeners();
     });
+});
+
+// Keep a set of all connected sockets to destroy destroy when trying to close the server.
+let connectedSockets = new Set();
+server.on('connection', (conn) => {
+    connectedSockets.add(conn);
+    conn.on('close', () => {
+        console.log('Socket.io: close ');
+        connectedSockets.delete(conn);
+    });
+});
+
+// Catch errors from the OS when the server is not closed before app suspension.
+server.on('error', (err) => {
+    console.log('Server error: ' + JSON.stringify(err));
 });
 
 function server_start() {
@@ -68,14 +91,23 @@ function server_start() {
 if (isMobile) {
     const cordova = require('cordova-bridge');
 
-    cordova.app.on('pause', () => {
-        console.log('NodeJS received a pause event.');
-        server.close();
+    cordova.app.on('pause', (lock) => {
+        io.close( () => {
+            console.log("Node: I have closed the server.")
+            lock.release();
+        });
+        // The server will only close after all underlying connections have been destroyed.
+        var socketsToDestroy = connectedSockets.values();
+        connectedSockets.forEach( (sock) => {
+            sock.destroy();
+        });
+        cordova.channel.post('angular-log', "pause event received.");
     });
 
     cordova.app.on('resume', () => {
         console.log('NodeJS received a resume event.');
         server_start();
+        cordova.channel.post('angular-log', "resume event received.");
     });
 
     let listenersBackup = {};
