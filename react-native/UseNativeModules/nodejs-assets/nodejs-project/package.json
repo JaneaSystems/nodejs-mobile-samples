@@ -1,0 +1,12 @@
+{
+  "name": "rn-native-modules-node-project",
+  "version": "0.0.1",
+  "description": "node part of the react-native sample",
+  "main": "main.js",
+  "author": "janeasystems",
+  "license": "",
+  "dependencies": {
+    "sha3": "1.2.2",
+    "sqlite3": "4.0.1"
+  }
+}
