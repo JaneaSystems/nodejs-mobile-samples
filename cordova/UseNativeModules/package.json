@@ -1,0 +1,29 @@
+{
+  "name": "com.example.usenativemodules",
+  "displayName": "UseNativeModules",
+  "version": "1.0.0",
+  "description": "A sample nodejs-mobile-cordova application that uses native modules.",
+  "main": "index.js",
+  "scripts": {
+    "prepare-nodejs": "cd www/nodejs-project && npm install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Janea Systems Inc.",
+  "license": "MIT",
+  "dependencies": {
+    "cordova-android": "^6.3.0",
+    "cordova-ios": "^4.5.4",
+    "cordova-plugin-whitelist": "^1.3.3",
+    "nodejs-mobile-cordova": "0.2.0"
+  },
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-whitelist": {},
+      "nodejs-mobile-cordova": {}
+    },
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+bin/*
+!/plugins
+!/plugins/android.json
+!/plugins/fetch.json
+plugins/*
+platforms/*
+node_modules/*
+.DS_Store
