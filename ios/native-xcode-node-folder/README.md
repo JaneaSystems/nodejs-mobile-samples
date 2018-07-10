@@ -2,7 +2,7 @@
 
 An iOS Xcode project that uses the [`Node.js on Mobile`]( https://github.com/janeasystems/nodejs-mobile) shared library, as an example of using a Node Project folder inside the Application.
 
-The sample app runs the node.js engine in a background thread to start an HTTP server on port 3000 and return the `process.versions` value. The app's Main ViewController UI has a button to query the server and show the server's response. Alternatively, it's also possible to access the server from a browser running on a different device connected to the same local network.
+The sample app runs the node.js engine in a background thread to start an HTTP server on port 3000 and return the `process.versions` value alongside the result of using the [`left-pad` npm module](https://www.npmjs.com/package/left-pad). The app's Main ViewController UI has a button to query the server and show the server's response. Alternatively, it's also possible to access the server from a browser running on a different device connected to the same local network.
 
 ## Prerequisites
 To run the sample on iOS you need:
@@ -12,7 +12,8 @@ To run the sample on iOS you need:
 
 ## How to run
  - Clone this project.
- - Download the Node.js on Mobile shared library from [here](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.4/nodejs-mobile-v0.1.4-ios.zip).
+ - Run `npm install` inside `ios/native-xcode-node-folder/nodejs-project/`.
+ - Download the Node.js on Mobile shared library from [here](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.6/nodejs-mobile-v0.1.6-ios.zip).
  - Copy the `NodeMobile.framework` file inside the zip's `Release-universal` path to this project's `NodeMobile/` folder (there's a `copy-NodeMobile.framework-here` empty file inside the project's folder for convenience).
  - In Xcode import the `ios/native-xcode-node-folder/native-xcode-node-folder.xcodeproj` project.
  - Select one physical iOS device as the run target.
@@ -49,7 +50,21 @@ versions_server.listen(3000);
 }
 ```
 
-> Having a `nodejs-project` path with a `package.json` inside is helpful for using npm modules, by running `npm install {module_name}` inside `nodejs-project` so that the modules are also packaged with the application and made available at runtime.
+### Add an npm module to the `nodejs-project`
+
+Having a `nodejs-project` path with a `package.json` inside is helpful for using npm modules, by running `npm install {module_name}` inside `nodejs-project` so that the modules are also packaged with the application and made available at runtime.
+
+Install the `left-pad` module, by running `npm install left-pad` inside the `nodejs-project` folder.
+
+Update `main.js` to use the module:
+```js
+var http = require('http');
+var leftPad = require('left-pad');
+var versions_server = http.createServer( (request, response) => {
+  response.end('Versions: ' + JSON.stringify(process.versions) + ' left-pad: ' + leftPad(42, 5, '0'));
+});
+versions_server.listen(3000);
+```
 
 ### Start the node runtime from the Node Project
 
