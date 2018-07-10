@@ -4,5 +4,8 @@
   "description": "node part of the project",
   "main": "main.js",
   "author": "janeasystems",
-  "license": ""
+  "license": "",
+  "dependencies": {
+    "left-pad": "1.3.0"
+  }
 }

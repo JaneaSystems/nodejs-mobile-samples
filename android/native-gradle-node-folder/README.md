@@ -2,11 +2,12 @@
 
 An Android Studio project that uses the [`Node.js on Mobile`]( https://github.com/janeasystems/nodejs-mobile) shared library, as an example of using a Node Project folder inside the Application.
 
-The sample app runs the node.js engine in a background thread to start an HTTP server on port 3000. The app's Main Activity UI has a button to query the server and show the server's response (i.e. the `process.versions` value). Alternatively, it's also possible to access the server from a browser running on a different device connected to the same local network.
+The sample app runs the node.js engine in a background thread to start an HTTP server on port 3000. The app's Main Activity UI has a button to query the server and show the server's response (i.e. the `process.versions` value, alongside the result of using the [`left-pad` npm module](https://www.npmjs.com/package/left-pad)). Alternatively, it's also possible to access the server from a browser running on a different device connected to the same local network.
 
 ## How to run
  - Clone this project.
- - Download the Node.js on Mobile shared library from [here](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.4/nodejs-mobile-v0.1.4-android.zip).
+ - Run `npm install` inside `android/native-gradle-node-folder/app/src/main/assets/nodejs-project/`.
+ - Download the Node.js on Mobile shared library from [here](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.6/nodejs-mobile-v0.1.6-android.zip).
  - Copy the `bin/` folder from inside the downloaded zip file to `app/libnode/bin` (There are `copy-libnode.so-here` files in each architecture's path for convenience). If it's been done correctly you'll end with the following paths for the binaries:
    - `app/libnode/bin/arm64-v8a/libnode.so`
    - `app/libnode/bin/armeabi-v7a/libnode.so`
@@ -46,7 +47,22 @@ console.log('The node project has started.');
 }
 ```
 
-> Having a `nodejs-project` path with a `package.json` inside is helpful for using npm modules, by running `npm install {module_name}` inside `nodejs-project` so that the modules are also packaged with the application and made available at runtime.
+### Add an npm module to the `nodejs-project`
+
+Having a `nodejs-project` path with a `package.json` inside is helpful for using npm modules, by running `npm install {module_name}` inside `nodejs-project` so that the modules are also packaged with the application and made available at runtime.
+
+Install the `left-pad` module, by running `npm install left-pad` inside the `app/src/main/assets/nodejs-project/` folder.
+
+Update `app/src/main/assets/nodejs-project/main.js` to use the module:
+```js
+var http = require('http');
+var leftPad = require('left-pad');
+var versions_server = http.createServer( (request, response) => {
+  response.end('Versions: ' + JSON.stringify(process.versions) + ' left-pad: ' + leftPad(42, 5, '0'));
+});
+versions_server.listen(3000);
+console.log('The node project has started.');
+```
 
 ### Copy the `nodejs-project` at runtime and start from there
 
