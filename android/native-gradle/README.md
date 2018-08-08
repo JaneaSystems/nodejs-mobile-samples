@@ -171,7 +171,7 @@ Remove the references to the native function, that was replaced in `native-lib.c
 #### Start a background thread to run `startNodeWithArguments`:
 
 The app uses a background thread to run the Node.js engine and it supports to run only one instance of it.  
-The node code is a simple HTTP server on port 3000 that returns `process.versions`. For semplicity, the node code is embedded in the `MainActivity.java` file:
+The node code is a simple HTTP server on port 3000 that returns `process.versions`. For simplicity, the node code is embedded in the `MainActivity.java` file:
 ```js
 var http = require('http');
 var versions_server = http.createServer( (request, response) => {
