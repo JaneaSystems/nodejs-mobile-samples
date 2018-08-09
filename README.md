@@ -9,5 +9,6 @@ It contains the following samples:
 * iOS: [Native Xcode Sample using a Node Project folder](ios/native-xcode-node-folder)
 * React-Native: [Suspend Resume Sample](react-native/SuspendResume)
 * React-Native: [Use Native Modules](react-native/UseNativeModules)
+* React-Native: [Use Multiple Channel Events](react-native/UseMultipleChannels)
 * Cordova: [Cordova App With AngularJS](cordova-angularjs)
 * Cordova: [Use Native Modules](cordova/UseNativeModules)
