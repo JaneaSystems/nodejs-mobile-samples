@@ -15,22 +15,32 @@
 
 @implementation AppDelegate
 
+- (void)startNode {
+    NSArray* nodeArguments = [NSArray arrayWithObjects:
+                                @"node",
+                                @"-e",
+                                @"var http = require('http'); "
+                                " var versions_server = http.createServer( (request, response) => { "
+                                "   response.end('Versions: ' + JSON.stringify(process.versions)); "
+                                " }); "
+                                " versions_server.listen(3000); "
+                                ,
+                                nil
+                                ];
+    [NodeRunner startEngineWithArguments:nodeArguments];
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        NSArray* nodeArguments = [NSArray arrayWithObjects:
-                                  @"node",
-                                  @"-e",
-                                  @"var http = require('http'); "
-                                  " var versions_server = http.createServer( (request, response) => { "
-                                  "   response.end('Versions: ' + JSON.stringify(process.versions)); "
-                                  " }); "
-                                  " versions_server.listen(3000); "
-                                  ,
-                                  nil
-                                  ];
-        [NodeRunner startEngineWithArguments:nodeArguments];
-    });
+    NSThread* nodejsThread = nil;
+    nodejsThread = [[NSThread alloc]
+        initWithTarget:self
+        selector:@selector(startNode)
+        object:nil
+    ];
+    // Set 1MB of stack space for the Node.js thread,
+    // the same as the iOS application's main thread.
+    [nodejsThread setStackSize:1024*1024];
+    [nodejsThread start];
     return YES;
 }
 

@@ -15,17 +15,27 @@
 
 @implementation AppDelegate
 
+- (void)startNode {
+    NSString* srcPath = [[NSBundle mainBundle] pathForResource:@"nodejs-project/main.js" ofType:@""];
+    NSArray* nodeArguments = [NSArray arrayWithObjects:
+                                @"node",
+                                srcPath,
+                                nil
+                                ];
+    [NodeRunner startEngineWithArguments:nodeArguments];
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        NSString* srcPath = [[NSBundle mainBundle] pathForResource:@"nodejs-project/main.js" ofType:@""];
-        NSArray* nodeArguments = [NSArray arrayWithObjects:
-                                  @"node",
-                                  srcPath,
-                                  nil
-                                  ];
-        [NodeRunner startEngineWithArguments:nodeArguments];
-    });
+    NSThread* nodejsThread = nil;
+    nodejsThread = [[NSThread alloc]
+        initWithTarget:self
+        selector:@selector(startNode)
+        object:nil
+    ];
+    // Set 1MB of stack space for the Node.js thread,
+    // the same as the iOS application's main thread.
+    [nodejsThread setStackSize:1024*1024];
+    [nodejsThread start];
     return YES;
 }
 

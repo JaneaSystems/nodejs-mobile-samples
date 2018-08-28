@@ -13,19 +13,19 @@
 		3392BFE11F7EA24100FDD2A3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3392BFE01F7EA24100FDD2A3 /* Assets.xcassets */; };
 		3392BFE41F7EA24100FDD2A3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3392BFE21F7EA24100FDD2A3 /* LaunchScreen.storyboard */; };
 		3392BFE71F7EA24100FDD2A3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3392BFE61F7EA24100FDD2A3 /* main.m */; };
-		3392BFEE1F7EA27F00FDD2A3 /* libnode.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3392BFED1F7EA27F00FDD2A3 /* libnode.framework */; };
-		3392BFEF1F7EA27F00FDD2A3 /* libnode.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3392BFED1F7EA27F00FDD2A3 /* libnode.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3392BFF21F7EA2BC00FDD2A3 /* NodeRunner.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3392BFF11F7EA2BC00FDD2A3 /* NodeRunner.mm */; };
+		33AB47DB2135A03900BEE700 /* NodeMobile.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 33AB47D82135A03100BEE700 /* NodeMobile.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		33AB47DE2135A04300BEE700 /* NodeMobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33AB47D82135A03100BEE700 /* NodeMobile.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		3392BFF01F7EA27F00FDD2A3 /* Embed Frameworks */ = {
+		33AB47DC2135A03900BEE700 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				3392BFEF1F7EA27F00FDD2A3 /* libnode.framework in Embed Frameworks */,
+				33AB47DB2135A03900BEE700 /* NodeMobile.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -43,9 +43,9 @@
 		3392BFE31F7EA24100FDD2A3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3392BFE51F7EA24100FDD2A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3392BFE61F7EA24100FDD2A3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		3392BFED1F7EA27F00FDD2A3 /* libnode.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = libnode.framework; path = libnode/libnode.framework; sourceTree = "<group>"; };
 		3392BFF11F7EA2BC00FDD2A3 /* NodeRunner.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NodeRunner.mm; sourceTree = "<group>"; };
 		3392BFF31F7EA2E100FDD2A3 /* NodeRunner.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NodeRunner.h; sourceTree = "<group>"; };
+		33AB47D82135A03100BEE700 /* NodeMobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NodeMobile.framework; path = libnode/NodeMobile.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,7 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3392BFEE1F7EA27F00FDD2A3 /* libnode.framework in Frameworks */,
+				33AB47DE2135A04300BEE700 /* NodeMobile.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,9 +63,10 @@
 		3392BFCB1F7EA24100FDD2A3 = {
 			isa = PBXGroup;
 			children = (
-				3392BFED1F7EA27F00FDD2A3 /* libnode.framework */,
+				33AB47D82135A03100BEE700 /* NodeMobile.framework */,
 				3392BFD61F7EA24100FDD2A3 /* native-xcode */,
 				3392BFD51F7EA24100FDD2A3 /* Products */,
+				33AB47DD2135A04300BEE700 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -95,6 +96,13 @@
 			path = "native-xcode";
 			sourceTree = "<group>";
 		};
+		33AB47DD2135A04300BEE700 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -105,7 +113,7 @@
 				3392BFD01F7EA24100FDD2A3 /* Sources */,
 				3392BFD11F7EA24100FDD2A3 /* Frameworks */,
 				3392BFD21F7EA24100FDD2A3 /* Resources */,
-				3392BFF01F7EA27F00FDD2A3 /* Embed Frameworks */,
+				33AB47DC2135A03900BEE700 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

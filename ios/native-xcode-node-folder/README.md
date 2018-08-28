@@ -13,7 +13,7 @@ To run the sample on iOS you need:
 ## How to run
  - Clone this project.
  - Run `npm install` inside `ios/native-xcode-node-folder/nodejs-project/`.
- - Download the Node.js on Mobile shared library from [here](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.6/nodejs-mobile-v0.1.6-ios.zip).
+ - Download the Node.js on Mobile shared library from [here](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.7/nodejs-mobile-v0.1.7-ios.zip).
  - Copy the `NodeMobile.framework` file inside the zip's `Release-universal` path to this project's `NodeMobile/` folder (there's a `copy-NodeMobile.framework-here` empty file inside the project's folder for convenience).
  - In Xcode import the `ios/native-xcode-node-folder/native-xcode-node-folder.xcodeproj` project.
  - Select one physical iOS device as the run target.
@@ -71,16 +71,13 @@ versions_server.listen(3000);
 Change the code that starts the node runtime in `AppDelegate.m` to find the `main.js` inside the Application's bundle and start from there:
 
 ```objectivec
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        NSString* srcPath = [[NSBundle mainBundle] pathForResource:@"nodejs-project/main.js" ofType:@""];
-        NSArray* nodeArguments = [NSArray arrayWithObjects:
-                                  @"node",
-                                  srcPath,
-                                  nil
-                                  ];
-        [NodeRunner startEngineWithArguments:nodeArguments];
-    });
-    return YES;
+- (void)startNode {
+    NSString* srcPath = [[NSBundle mainBundle] pathForResource:@"nodejs-project/main.js" ofType:@""];
+    NSArray* nodeArguments = [NSArray arrayWithObjects:
+                                @"node",
+                                srcPath,
+                                nil
+                                ];
+    [NodeRunner startEngineWithArguments:nodeArguments];
 }
 ```

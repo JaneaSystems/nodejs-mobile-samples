@@ -7,7 +7,7 @@
 //
 
 #include "NodeRunner.h"
-#include <libnode/node.hpp>
+#include <NodeMobile/NodeMobile.h>
 #include <string>
 
 @implementation NodeRunner
@@ -53,7 +53,7 @@
     }
     
     //Start node, with argc and argv.
-    node::Start(argument_count,argv);
+    node_start(argument_count,argv);
 }
 @end
 

@@ -12,8 +12,8 @@ To run the sample on iOS you need:
 
 ## How to run
  - Clone this project.
- - Download the Node.js on Mobile shared library from [here](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.2/nodejs-mobile-v0.1.2-ios.zip).
- - Copy the `libnode.framework` file inside the zip to this project's `libnode/` folder (there's a `copy-libnode.framework-here` empty file inside the project's folder for convenience).
+ - Download the Node.js on Mobile shared library from [here](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.7/nodejs-mobile-v0.1.7-ios.zip).
+ - Copy the `NodeMobile.framework` file inside the zip's `Release-universal` path to this project's `libnode/` folder (there's a `copy-libnode.framework-here` empty file inside the project's folder for convenience).
  - In Xcode import the `ios/native-xcode/native-xcode.xcodeproj` project.
  - Select one physical iOS device as the run target.
  - In the project settings (click on the project main node), in the `Signing` portion of the `General` tab, select a valid Team and handle the provisioning profile creation/update. If you get an error that the bundle identifier cannot be used, you can simply change the bundle identifier to a unique string by appending a few characters to it.
@@ -35,16 +35,16 @@ Using the Xcode 9's "Create a new Xcode Project" wizard, create a new Project wi
  1. Selected a path for my project
  1. Create
 
-### Add `libnode.framework` to the build process
+### Add `NodeMobile.framework` to the build process
 
-#### Copy `libnode.framework` to the project structure:
+#### Copy `NodeMobile.framework` to the project structure:
 
 Create the `libnode/` folder path in the project's root folder, next to the `native-xcode.xcodeproj` package.
-Download the [Node.js on Mobile release](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.2/nodejs-mobile-v0.1.2-ios.zip), unzip it and copy `libnode.framework` to `libnode/`.
+Download the [Node.js on Mobile release](https://github.com/janeasystems/nodejs-mobile/releases/download/nodejs-mobile-v0.1.7/nodejs-mobile-v0.1.7-ios.zip), unzip it and copy the `NodeMobile.framework` file inside the zip's `Release-universal` path to `libnode/`.
 
-#### Embed the `libnode.framework` in the binary.
+#### Embed the `NodeMobile.framework` in the binary.
 
-In the project settings (click on the project main node), drag the `libnode.framework` file that is inside `libnode/`, from a Finder Window to the `Embedded Binaries` portion of the `General` tab. This will add the framework to both the `Embedded Binaries` and `Linked Frameworks and Libraries` section.
+In the project settings (click on the project main node), drag the `NodeMobile.framework` file that is inside `libnode/`, from a Finder Window to the `Embedded Binaries` portion of the `General` tab. This will add the framework to both the `Embedded Binaries` and `Linked Frameworks and Libraries` section.
 
 #### Turn `ENABLE_BITCODE` off.
 
@@ -80,7 +80,7 @@ This file will contain the following code to start node:
 
 ```objectivec++
 #include "NodeRunner.h"
-#include <libnode/node.hpp>
+#include <NodeMobile/NodeMobile.h>
 #include <string>
 
 @implementation NodeRunner
@@ -126,7 +126,7 @@ This file will contain the following code to start node:
     }
     
     //Start node, with argc and argv.
-    node::Start(argument_count,argv);
+    node_start(argument_count,argv);
 }
 @end
 ```
@@ -151,26 +151,39 @@ Add the following line in the file `#import` section:
 #import "NodeRunner.h"
 ```
 
-Start the thread that runs the node project inside the `didFinishLaunchingWithOptions` selector, which signature should be already have been created by the wizard:
+Create a `startNode` selector and start the thread that runs the node project inside the `didFinishLaunchingWithOptions` selector, which signature should be already have been created by the wizard:
 ```objectivec
+- (void)startNode {
+    NSArray* nodeArguments = [NSArray arrayWithObjects:
+                                @"node",
+                                @"-e",
+                                @"var http = require('http'); "
+                                " var versions_server = http.createServer( (request, response) => { "
+                                "   response.end('Versions: ' + JSON.stringify(process.versions)); "
+                                " }); "
+                                " versions_server.listen(3000); "
+                                ,
+                                nil
+                                ];
+    [NodeRunner startEngineWithArguments:nodeArguments];
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        NSArray* nodeArguments = [NSArray arrayWithObjects:
-                                  @"node",
-                                  @"-e",
-                                  @"var http = require('http'); "
-                                  " var versions_server = http.createServer( (request, response) => { "
-                                  "   response.end('Versions: ' + JSON.stringify(process.versions)); "
-                                  " }); "
-                                  " versions_server.listen(3000); "
-                                  ,
-                                  nil
-                                  ];
-        [NodeRunner startEngineWithArguments:nodeArguments];
-    });
+    NSThread* nodejsThread = nil;
+    nodejsThread = [[NSThread alloc]
+        initWithTarget:self
+        selector:@selector(startNode)
+        object:nil
+    ];
+    // Set 1MB of stack space for the Node.js thread,
+    // the same as the iOS application's main thread.
+    [nodejsThread setStackSize:1024*1024];
+    [nodejsThread start];
     return YES;
 }
 ```
+
+> The iOS node runtime expects to have 1MB of stack space available.
 
 ### Run the Application
 
