@@ -37,9 +37,8 @@
         selector:@selector(startNode)
         object:nil
     ];
-    // Set 1MB of stack space for the Node.js thread,
-    // the same as the iOS application's main thread.
-    [nodejsThread setStackSize:1024*1024];
+    // Set 2MB of stack space for the Node.js thread.
+    [nodejsThread setStackSize:2*1024*1024];
     [nodejsThread start];
     return YES;
 }

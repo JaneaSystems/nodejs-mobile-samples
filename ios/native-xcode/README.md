@@ -175,15 +175,14 @@ Create a `startNode` selector and start the thread that runs the node project in
         selector:@selector(startNode)
         object:nil
     ];
-    // Set 1MB of stack space for the Node.js thread,
-    // the same as the iOS application's main thread.
-    [nodejsThread setStackSize:1024*1024];
+    // Set 2MB of stack space for the Node.js thread.
+    [nodejsThread setStackSize:2*1024*1024];
     [nodejsThread start];
     return YES;
 }
 ```
 
-> The iOS node runtime expects to have 1MB of stack space available.
+> The iOS node runtime expects to have 1MB of stack space available. Having 2MB of stack space available is recommended.
 
 ### Run the Application
 
