@@ -17,7 +17,7 @@
     "jshint": "jshint ./src/client/app/app.js && jshint ./src/server/main.js",
     "setup-cordova": "mkdirp ./cordova && pushd ./cordova && cordova create ExampleCordovaAngular && npm run add-platforms && npm run add-plugins && popd",
     "add-platforms": "pushd ./cordova/ExampleCordovaAngular && cordova platform add ios android && popd",
-    "add-plugins": "pushd ./cordova/ExampleCordovaAngular && cordova plugin add nodejs-mobile-cordova@0.2.1 && cordova plugin add cordova-plugin-file && cordova plugin add cordova-plugin-console && popd"
+    "add-plugins": "pushd ./cordova/ExampleCordovaAngular && cordova plugin add nodejs-mobile-cordova@0.2.3 && cordova plugin add cordova-plugin-file && cordova plugin add cordova-plugin-console && popd"
   },
   "keywords": [
     "mobile",
