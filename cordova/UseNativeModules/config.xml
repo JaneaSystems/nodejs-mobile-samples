@@ -24,7 +24,7 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
-    <engine name="android" spec="~6.3.0" />
+    <engine name="android" spec="~7.1.0" />
     <engine name="ios" spec="~4.5.4" />
-    <plugin name="nodejs-mobile-cordova" spec="0.2.0" />
+    <plugin name="nodejs-mobile-cordova" spec="0.3.0" />
 </widget>
