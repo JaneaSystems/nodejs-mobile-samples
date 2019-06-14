@@ -18,7 +18,7 @@ function sha3SampleCode() {
 // sqlite3 module sample code adapted from its README.
 function sqlite3SampleCode( resultsCallback ) {
   var sqlite3 = require('sqlite3').verbose();
-  var db = new sqlite3.Database(':memory:');
+  var db = new sqlite3.Database(`${rn_bridge.app.datadir()}/MyDb.db`, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
 
   db.serialize(function() {
     db.run("CREATE TABLE lorem (info TEXT)");
