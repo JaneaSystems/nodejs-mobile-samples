@@ -83,6 +83,8 @@ Go back to the Terminal window to build the Cordova app.
 ```
  $ cd cordova/ExampleCordovaAngular
  $ cordova build ios --device
+ or XCode 11.5
+ $ cordova build ios --device --buildFlag="-UseModernBuildSystem=0" 
 ```
 
 Go back to Xcode:
