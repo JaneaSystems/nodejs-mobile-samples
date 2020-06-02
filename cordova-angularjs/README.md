@@ -68,7 +68,7 @@ Next, run a build to copy the NodeJs and AngularJs files to the `cordova/www` fo
 Open the Cordova app project in Xcode:
 
 ```
- $ open cordova/ExampleCordovaAngular/platforms/ios/HelloCordova.xcodeproj
+ $ open cordova/ExampleCordovaAngular/platforms/ios/HelloCordova.xcworkspace
 ```
 
 In Xcode:
