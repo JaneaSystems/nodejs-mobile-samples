@@ -104,6 +104,8 @@ With your device connected, run the following commands from terminal:
 
 The app itself will show the sequence of events; these events are also output to logcat
 
+On newer versions of Cordova, clear text http connections might not be allowed, for which you might have to add `android:usesCleartextTraffic="true"` in the `application` tag inside "AndroidManifest.xml".
+
 ### Starting Over
 
 If you want to clean out the cordova app and start over, use `gulp clean:cordova`.  Then start over with the instructions in this section.
