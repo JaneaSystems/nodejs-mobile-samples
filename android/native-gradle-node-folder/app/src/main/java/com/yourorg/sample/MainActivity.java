@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
-    public native Integer startNodeWithArguments(String[] arguments);
+    public native int startNodeWithArguments(String[] arguments);
 
     private boolean wasAPKUpdated() {
         SharedPreferences prefs = getApplicationContext().getSharedPreferences("NODEJS_MOBILE_PREFS", Context.MODE_PRIVATE);
