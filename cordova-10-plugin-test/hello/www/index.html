@@ -39,11 +39,19 @@
     </head>
     <body>
         <div class="app">
-            <h1>Apache Cordova</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
+            
+            <input type="number" id="fibo-input" min="1" max="45" value="40">
+            
+            <div>
+                <button id="getFromJavaBtn">Get from java</button>
+                <div>fibo number from java <span id="fibo-java-result"></span></div>
             </div>
+
+            <div>
+                <button id="getFromJsBtn">Get from webview js</button>
+                <div>fibo number from js<span id="fibo-js-result"></span></div>
+            </div>
+            <div id="duration"></div>
         </div>
         <script src="cordova.js"></script>
         <script src="js/index.js"></script>
