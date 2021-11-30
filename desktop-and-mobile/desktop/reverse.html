@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reverse-thinking platform info is here</title>
+</head>
+<body id="body">
+  <script>
+    // Import the ipcRenderer, to communicate with the Main process
+    const {ipcRenderer} = require('electron');
+
+    // Simple DOM JavaScript to write info to the body
+    body = document.getElementById("body");
+
+    // Here, no request from the Renderer
+    // The process instead waits for the data from the Main process, and then deals with it
+    ipcRenderer.on("infosReverse", function (event, arg) {
+      body.innerHTML = "This was send using a reverse thinking: " + arg;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Synchronous platform info is here</title>
+</head>
+<body id="body" onload="updateInfos();">
+  <script>
+    // Import the ipcRenderer, to communicate with the Main process
+    const {ipcRenderer} = require('electron');
+
+    // Simple DOM JavaScript to write info to the body
+    body = document.getElementById("body");
+
+    // This sends a SYNCHRONOUS request to the Main process
+    // This means that until the Main process has returned a value, everything will be paused
+    function updateInfos() {
+      body.innerHTML = "To know that you were operating " + ipcRenderer.sendSync("syncInfosRequest") + ", we used a synchronous event.";
+    }
+  </script>
+</body>
+</html>

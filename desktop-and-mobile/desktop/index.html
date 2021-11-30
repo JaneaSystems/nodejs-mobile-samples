@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>All info is here</title>
+</head>
+<body id="body" onload="updateInfos();">
+  <script>
+    // Import the ipcRenderer, to communicate with the Main process
+    const {ipcRenderer} = require('electron');
+
+    // Simple DOM JavaScript to write info to the body
+    body = document.getElementById("body");
+
+    function updateInfos() {
+      // Sends an asynchronous request to the Main process
+      ipcRenderer.send("infosRequest");
+    }
+
+    // When the response to the asynchronous request arrives, so something with it (here, formatting the data)
+    ipcRenderer.on("infosResponse", function (event, arg) {
+      arg = JSON.parse(arg);
+      body.innerHTML = "";
+      for (var i = 0; i < arg.ifaces.names.length; i++) {
+        body.innerHTML += arg.ifaces.names[i] + ": " + arg.ifaces.addresses[i] + "<br/>";
+      }
+      body.innerHTML += "Platform: " + arg.platform + " ver " + arg.platform_version;
+    });
+  </script>
+</body>
+</html>
