@@ -36,7 +36,7 @@
     "browser-sync": "2.18.13",
     "del": "3.0.0",
     "glob": "7.1.2",
-    "gulp": "3.9.1",
+    "gulp": "4.0.2",
     "gulp-livereload": "3.8.1",
     "jshint": "2.9.5",
     "mkdirp": "0.5.1",
